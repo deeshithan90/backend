@@ -1,18 +1,19 @@
 const express = require("express");
 const cors = require("cors");
-const serverless = require("serverless-http");
-const UserModel = require("../model/EnquiryModel");
+const UserModel = require("./model/EnquriyModel");
 const MongoDBConnect = require("./db/ConnectDb");
+const path = require('path')
+const dotenv = require('dotenv')
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
+dotenv.config({path : path.join(__dirname,'.env')})
+
 app.post("/api/en", async (req, res) => {
   try {
-    await MongoDBConnect();
-
     const { FullName, Phone, Email, DisCribe } = req.body;
 
     if (!FullName || !Phone || !Email || !DisCribe) {
@@ -33,5 +34,7 @@ app.post("/api/en", async (req, res) => {
   }
 });
 
-module.exports = app;
-module.exports.handler = serverless(app);
+app.listen(process.env.PORT, () => {
+  console.log(`server is run on ${process.env.PORT} in ${process.env.PORT}`)
+  MongoDBConnect()
+})
