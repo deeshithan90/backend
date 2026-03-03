@@ -2,16 +2,28 @@ const express = require('express');
 const serverless = require('serverless-http');
 const cors = require('cors');
 const UserModel = require('../model/EnquiryModel');
-const MongoDBConnect = require('./db/ConnectionDB');
+const mongoose = require('mongoose')
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+
+const MongoDBConnect = async () => {
+   mongoose.connect(process.env.MONGO_URI)
+   .then(()=>{
+    console.log('MongoDB connect sucess')
+   })
+   .catch((err)=>{
+    console.log(err)
+   })
+};
+
+MongoDBConnect()
+
 // POST /api/en -> Create enquiry
 app.post('/api/en', async (req, res) => {
   try {
-    await MongoDBConnect(); // ensure connection
     const { FullName, Phone, Email, DisCribe } = req.body;
 
     if (!FullName || !Phone || !Email || !DisCribe) {
