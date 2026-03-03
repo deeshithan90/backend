@@ -1,19 +1,15 @@
 const express = require('express');
-const path = require('path');
+const serverless = require('serverless-http');
 const cors = require('cors');
-const dotenv = require('dotenv');
-const mongoose = require('mongoose');
-const UserModel = require('./model/EnquriyModel');
-const MongoDBConnect = require('./db/ConnectionDB');
-
-dotenv.config({ path: path.join(__dirname, '.env') });
+const MongoDBConnect = require('../db/ConnectionDB');
+const UserModel = require('../model/EnquiryModel');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// MongoDB Connect
-MongoDBConnect()
+// Connect MongoDB
+MongoDBConnect().catch(err => console.error(err));
 
 // POST /api/en -> Create enquiry
 app.post('/api/en', async (req, res) => {
@@ -24,7 +20,6 @@ app.post('/api/en', async (req, res) => {
     }
 
     const data = await UserModel.create({ FullName, Phone, Email, DisCribe });
-
     res.status(201).json({ message: 'Enquiry submitted successfully', success: true, data });
   } catch (error) {
     console.error(error);
@@ -38,9 +33,7 @@ app.post('/api/en', async (req, res) => {
 // POST /api/admin/login -> Admin login
 app.post('/api/admin/login', (req, res) => {
   const { username, password } = req.body;
-
   if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
-    // In production use JWT or session
     return res.status(200).json({ success: true, message: 'Login successful' });
   } else {
     return res.status(401).json({ success: false, message: 'Invalid credentials' });
@@ -57,6 +50,6 @@ app.get('/api/admin/enquiries', async (req, res) => {
   }
 });
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server running on port ${process.env.PORT}`);
-});
+// Export for Vercel serverless
+module.exports = app;
+module.exports.handler = serverless(app);
