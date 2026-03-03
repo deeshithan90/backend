@@ -1,8 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const serverless = require("serverless-http");
+const MongoDBConnect = require("../db/ConnectionDB");
 const UserModel = require("../model/EnquiryModel");
-const { default: ConnectionDB } = require("./db/ConnectDb");
 
 const app = express();
 
@@ -11,7 +11,7 @@ app.use(express.json());
 
 app.post("/api/en", async (req, res) => {
   try {
-    await ConnectionDB();
+    await MongoDBConnect();
 
     const { FullName, Phone, Email, DisCribe } = req.body;
 
