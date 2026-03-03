@@ -1,8 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const serverless = require("serverless-http");
-const MongoDBConnect = require("../db/ConnectionDB");
 const UserModel = require("../model/EnquiryModel");
+const MongoDBConnect = require("./db/ConnectDb");
 
 const app = express();
 
