@@ -34,6 +34,42 @@ app.post("/api/en", async (req, res) => {
   }
 });
 
+app.post("/api/admin/login", (req, res) => {
+  const { username, password } = req.body;
+
+  if (
+    username === process.env.ADMIN_USERNAME &&
+    password === process.env.ADMIN_PASSWORD
+  ) {
+    return res.status(200).json({
+      success: true,
+      message: "Login successful",
+    });
+  }
+
+  return res.status(401).json({
+    success: false,
+    message: "Invalid credentials",
+  });
+});
+
+app.get("/api/admin/enquiries", async (req, res) => {
+  try {
+    const enquiries = await UserModel.find().sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      data: enquiries,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch enquiries",
+    });
+  }
+});
+
 app.listen(process.env.PORT, () => {
   console.log(`server is run on ${process.env.PORT} in ${process.env.PORT}`)
   MongoDBConnect()
