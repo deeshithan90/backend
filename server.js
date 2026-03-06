@@ -107,7 +107,8 @@ app.post("/api/accept-cookies", (req, res) => {
   res.cookie("cookieConsent", "true", {
     maxAge: 365 * 24 * 60 * 60 * 1000, // 1 year
     httpOnly: false,
-    sameSite: "Lax"
+    secure : false,
+    sameSite: "None"
   });
 
   res.json({
