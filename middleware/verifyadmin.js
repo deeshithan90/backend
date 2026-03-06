@@ -1,8 +1,13 @@
-const verifyAdmin = (req, res, next) => {
+const jwt = require("jsonwebtoken");
+
+module.exports = (req, res, next) => {
   const token = req.cookies.adminToken;
 
   if (!token) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized"
+    });
   }
 
   try {
@@ -10,8 +15,9 @@ const verifyAdmin = (req, res, next) => {
     req.admin = decoded;
     next();
   } catch (error) {
-    return res.status(401).json({ message: "Invalid token" });
+    return res.status(401).json({
+      success: false,
+      message: "Invalid token"
+    });
   }
 };
-
-module.exports = verifyAdmin

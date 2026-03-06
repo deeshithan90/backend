@@ -4,7 +4,7 @@ const UserModel = require("./model/EnquriyModel");
 const MongoDBConnect = require("./db/ConnectDb");
 const path = require('path')
 const dotenv = require('dotenv')
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 const cookieParser = require("cookie-parser");
 const verifyAdmin = require("./middleware/verifyadmin");
 
@@ -65,7 +65,7 @@ app.post("/api/admin/login", (req, res) => {
     res.cookie("adminToken", token, {
       httpOnly: true,
       secure: false, 
-      sameSite: "Strict",
+      sameSite: "None",
       maxAge: 24 * 60 * 60 * 1000
     });
 
