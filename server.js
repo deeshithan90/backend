@@ -113,6 +113,6 @@ app.post("/api/accept-cookies", (req, res) => {
 });
 
 app.listen(process.env.PORT, () => {
-  console.log(`server is run on ${process.env.PORT} in ${process.env.PORT}`)
+  console.log(`server is run on ${process.env.PORT} in ${process.env.NODE_ENV}`)
   MongoDBConnect()
 })
