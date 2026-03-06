@@ -6,7 +6,7 @@ const path = require('path');
 const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
 const cookieParser = require("cookie-parser");
-const verifyAdmin = require("./middleware/verifyadmin");
+const verifyAdmin = require('./middleware/verifyadmin');
 
 dotenv.config({ path: path.join(__dirname, '.env') });
 
@@ -28,11 +28,11 @@ app.use(cookieParser());
 // ----- ACCEPT COOKIES -----
 app.post("/api/accept-cookies", (req, res) => {
   res.cookie("cookieConsent", "true", {
-    maxAge: 365 * 24 * 60 * 60 * 1000, // 1 year
-    httpOnly: false,                 // frontend needs to read
-    secure: isProd,                  // only true in production (HTTPS)
-    sameSite: isProd ? "None" : "Lax" 
-  });
+  maxAge: 365 * 24 * 60 * 60 * 1000, // 1 year
+  httpOnly: false,    // frontend JS can read it
+  secure: true,       // required for HTTPS
+  sameSite: "None"    // required for cross-site cookies
+});
 
   res.json({
     success: true,
@@ -75,7 +75,7 @@ app.post("/api/admin/login", (req, res) => {
 
     res.cookie("adminToken", token, {
       httpOnly: true,
-      secure: isProd,
+      secure: true,
       sameSite: isProd ? "None" : "Lax",
       maxAge: 24 * 60 * 60 * 1000
     });
