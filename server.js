@@ -17,7 +17,7 @@ const isProd = process.env.NODE_ENV === "production";
 // ----- CORS -----
 app.use(cors({
   origin: isProd 
-    ? ["https://yourproductionfrontend.com"]  // replace with your deployed frontend URL
+    ? ["https://www.saiofficefurniture.in/"]  // replace with your deployed frontend URL
     : ["http://localhost:5173"],              // allow local frontend
   credentials: true
 }));
