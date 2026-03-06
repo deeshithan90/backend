@@ -11,7 +11,7 @@ const verifyAdmin = require("./middleware/verifyadmin");
 const app = express();
 
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: ["http://localhost:5173"],
   credentials: true
 }));
 
@@ -68,7 +68,7 @@ app.post("/api/admin/login", (req, res) => {
 
     res.cookie("adminToken", token, {
       httpOnly: true,
-      secure: false,
+      secure: true,
       sameSite: "None",
       maxAge: 24 * 60 * 60 * 1000
     });
@@ -107,7 +107,7 @@ app.post("/api/accept-cookies", (req, res) => {
   res.cookie("cookieConsent", "true", {
     maxAge: 365 * 24 * 60 * 60 * 1000, // 1 year
     httpOnly: false,
-    secure : false,
+    secure: false,
     sameSite: "None"
   });
 
