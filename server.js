@@ -12,13 +12,13 @@ dotenv.config({ path: path.join(__dirname, '.env') });
 
 const app = express();
 
-// Determine environment
 const isProd = process.env.NODE_ENV === "production";
 
+// ----- CORS -----
 app.use(cors({
   origin: isProd 
-    ? ["https://yourproductionfrontend.com"] 
-    : ["http://localhost:5173"], // dev frontend
+    ? ["https://yourproductionfrontend.com"]  // replace with your deployed frontend URL
+    : ["http://localhost:5173"],              // allow local frontend
   credentials: true
 }));
 
@@ -28,29 +28,23 @@ app.use(cookieParser());
 // ----- ACCEPT COOKIES -----
 app.post("/api/accept-cookies", (req, res) => {
   res.cookie("cookieConsent", "true", {
-  maxAge: 365 * 24 * 60 * 60 * 1000, // 1 year
-  httpOnly: false,    // frontend JS can read it
-  secure: true,       // required for HTTPS
-  sameSite: "None"    // required for cross-site cookies
-});
-
-  res.json({
-    success: true,
-    message: "Cookie consent saved"
+    maxAge: 365 * 24 * 60 * 60 * 1000, // 1 year
+    httpOnly: false,                   // frontend JS can read it
+    secure: isProd,                    // true in production
+    sameSite: isProd ? "None" : "Lax"
   });
+
+  res.json({ success: true, message: "Cookie consent saved" });
 });
 
 // ----- ENQUIRY FORM -----
 app.post("/api/en", async (req, res) => {
   try {
     const consent = req.cookies.cookieConsent;
-
-    if (!consent) {
-      return res.status(403).json({
-        success: false,
-        message: "Please accept cookies before submitting data"
-      });
-    }
+    if (!consent) return res.status(403).json({
+      success: false,
+      message: "Please accept cookies before submitting data"
+    });
 
     const { FullName, Phone, Email, DisCribe } = req.body;
     if (!FullName || !Phone || !Email || !DisCribe) {
@@ -61,8 +55,8 @@ app.post("/api/en", async (req, res) => {
     res.status(201).json({ success: true, data });
 
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, message: "Server crashed" });
+    console.error("❌ /api/en error:", error);
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 
@@ -75,7 +69,7 @@ app.post("/api/admin/login", (req, res) => {
 
     res.cookie("adminToken", token, {
       httpOnly: true,
-      secure: true,
+      secure: isProd,
       sameSite: isProd ? "None" : "Lax",
       maxAge: 24 * 60 * 60 * 1000
     });
@@ -92,7 +86,7 @@ app.get("/api/admin/enquiries", verifyAdmin, async (req, res) => {
     const enquiries = await UserModel.find().sort({ createdAt: -1 });
     res.status(200).json({ success: true, data: enquiries });
   } catch (error) {
-    console.log(error);
+    console.error("❌ /api/admin/enquiries error:", error);
     res.status(500).json({ success: false, message: "Failed to fetch enquiries" });
   }
 });
