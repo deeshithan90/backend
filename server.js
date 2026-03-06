@@ -11,14 +11,14 @@ const verifyAdmin = require("./middleware/verifyadmin");
 const app = express();
 
 app.use(cors({
-  origin: "http://localhost:5173", 
+  origin: "http://localhost:5173",
   credentials: true
 }));
 
 app.use(express.json());
 app.use(cookieParser())
 
-dotenv.config({path : path.join(__dirname,'.env')})
+dotenv.config({ path: path.join(__dirname, '.env') })
 
 app.post("/api/en", async (req, res) => {
   try {
@@ -68,7 +68,7 @@ app.post("/api/admin/login", (req, res) => {
 
     res.cookie("adminToken", token, {
       httpOnly: true,
-      secure: false, 
+      secure: false,
       sameSite: "None",
       maxAge: 24 * 60 * 60 * 1000
     });
