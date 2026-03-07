@@ -30,7 +30,7 @@ app.post("/api/accept-cookies", (req, res) => {
   res.cookie("cookieConsent", "true", {
     maxAge: 365 * 24 * 60 * 60 * 1000, // 1 year
     httpOnly: false,                   // frontend JS can read it
-    secure: isProd,                    // true in production
+    secure: isProd? true : false,                    // true in production
     sameSite: isProd ? "None" : "Lax"
   });
 
@@ -69,7 +69,7 @@ app.post("/api/admin/login", (req, res) => {
 
     res.cookie("adminToken", token, {
       httpOnly: true,
-      secure: isProd,
+      secure: isProd ? true : false,
       sameSite: isProd ? "None" : "Lax",
       maxAge: 24 * 60 * 60 * 1000
     });
